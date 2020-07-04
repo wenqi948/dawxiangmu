@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link th:href="@{/css/bootstrap.min.css}"  rel="stylesheet" type="text/css">
+</head>
+<style type="text/css">
+		#div-1{
+			background-color: #00FFFF;
+			width: 100%;
+			height: 30px;
+		}
+</style>
+<body>
+	<div id="ctx" class="container">
+		<div id="div-1" >
+				采购入库
+		</div>
+		<table class="table table-bordered">
+			<tr>
+				<td><div>单据编号：</div></td>
+				<td><div><div><input v-model="Tbbill1.billno"></div></div></td>
+				<td><div>单据日期：</div></td>
+				<td><div><div><input type="date" v-model="Tbbill1.billdate"></div></div></td>
+			</tr>
+			<tr>
+				<td><div>供应商：</div></td>
+				<td><div><div><input v-model="Tbbill1.suppliername"></div></div></td>
+				<td><div>供应商地址：</div></td>
+				<td><div><div><input  v-model="Tbbill1.supplieraddress"></div></div></td>
+			</tr>
+			<tr>
+				<td><div>部门：</div></td>
+				<td><div><div><input v-model="Tbbill1.department"></div></div></td>
+				<td><div>仓库：</div></td>
+				<td><div><div><input  v-model="Tbbill1.warehouse"></div></div></td>
+			</tr>
+			<tr>
+				<td><div>采购人员：</div></td>
+				<td><div><div><input v-model="Tbbill1.buyer"></div></div></td>
+				<td><div>菜单人员：</div></td>
+				<td><div><div><input  v-model="Tbbill1.executor"></div></div></td>
+			</tr>
+			<tr>
+				<td><div>入库明细：</div></td>
+				<td><textarea rows="10" cols="80"> {{Tbbill1.details}}</textarea></td>
+				
+			</tr>
+			
+		</table>
+		<button @click="tianjia()">保存</button>
+		<table class="table table-bordered">
+			<tr>
+				<td>单据编号</td>
+				<td>日期</td>
+				<td>供应商</td>
+				<td>采购人员</td>
+				<td>仓库</td>
+				<td>总金额</td>
+			<tr>
+			<tr v-for="item in list">
+				<td>{{item.billno}}</td>
+				<td>{{item.billdate}}</td>
+				<td>{{item.suppliername}}</td>
+				<td>{{item.buyer}}</td>
+				<td>{{item.warehouse}}</td>
+				<td>{{item.zje}}</td>
+			<tr>
+		</table>
+	</div>
+	<script type="text/javascript" th:src="@{/js/jquery-1.12.4.js}"></script>
+	<script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/vue.js}"></script>
+	<script type="text/javascript">
+	var vm=new Vue({
+		el:"#ctx",
+		data(){
+			return {
+				list:[],
+				Tbbill1:{
+					details1:[]
+				}
+			}
+		},
+		methods:{
+				tianjia(){
+					var thah=this;
+					var list=JSON.stringify(this.Tbbill1);
+					$.ajax({
+						url:"[[@{/TbbillServlet/toinsert}]]",
+						data:list,
+						contentType:"application/json;charset=utf-8",
+						type:"post",
+						success:function(result){
+							if(result=="0001"){
+								alert("添加成功！！！");
+							}else{
+								alert("添加失败！！！");
+							}
+						}
+					});
+				},
+				find(){
+					var thah=this;
+					$.ajax({
+						url:"[[@{/TbbillServlet/find}]]",
+						success:function(result){
+							thah.list = result;
+						}
+					});
+				}
+		},
+		created(){
+				this.find();
+		}
+	});
+	</script>
+</body>
+</html>

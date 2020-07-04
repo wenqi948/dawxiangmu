@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<link th:href="@{/css/bootstrap.min.css}"  rel="stylesheet" type="text/css">
+</head>
+<style type="text/css">
+		#div-1{
+			background-color: #00FFFF;
+			width: 100%;
+			height: 30px;
+		}
+	</style>
+	<body>
+		<div id="ctx" class="container">
+			<div id="div-1" >
+				采购入库
+			</div>
+			<div id="div-2" class="row">
+				单据编号：<input  v-model="Tbbill1.billno">
+				单据日期：<input  v-model="Tbbill1.billdate"><br>
+				供应商：<input  v-model="Tbbill1.suppliername">
+				供应商地址：<input  v-model="Tbbill1.supplieraddress"><br>
+				部门：<input  v-model="Tbbill1.department">
+				仓库：<input  v-model="Tbbill1.warehouse"><br>
+				采购人员：<input  v-model="Tbbill1.buyer">
+				菜单人员：<input  v-model="Tbbill1.executor"><br>
+				入库明细：<textarea >{{Tbbill1.details}}</textarea>
+				<br>
+				<button @click="jiazaiceshi">加载测试数据</button>
+				<button @click="find">加载服务端数据</button>
+				<button @click="xingzen()">保存</button>
+				<button @click="qingkong()">清空</button>
+			</div>
+		</div>
+		<script type="text/javascript" th:src="@{/js/jquery-1.12.4.js}"></script>
+		<script type="text/javascript" th:src="@{/js/bootstrap.min.js}"></script>
+		<script type="text/javascript" th:src="@{/js/vue.js}"></script>
+		<script type="text/javascript">
+		var vm=new Vue({
+			el:"#ctx",
+			data(){
+				return {
+					Tbbill2:{
+						details2:[]
+					},
+					Tbbill1:{
+						details1:[]
+					},
+					Tbbill:{
+						"billno":"20160119001",          //单据编号
+						"billdate":"2016-01-19",         //单据日期
+						"suppliername":"联想株洲总代理",     // 供应商
+						"supplieraddress":"株洲天元区黄山路", //供应商地址
+						"department":"物控部",             //采购所属部门
+						"warehouse":"株洲仓",              //入库仓库
+						"buyer":"牛采购",                  //采购人员
+						"executor":"小花",                //制单人
+						"details":[{                      //商品明细数据
+							"billno":"20160119001",         //商品编号
+							"lineid":1,                     //序号，或者行号
+							"goodsname":"联想笔记本",          //商品名称
+							"goodsnum":10,                  //数量
+							"goodsprice":3000,           //单价
+							"goodsmoneyamt":30000,       //金额
+							"ispresent":1               //是否赠品
+						},{
+							"billno":"20160119001",
+							"lineid":2,
+							"goodsname":"数码相机",
+							"goodsnum":10,
+							"goodsprice":2000,
+							"goodsmoneyamt":20000,
+							"ispresent":0
+						}]
+			
+					}
+							
+				}
+			},
+			methods:{
+				qingkong(){
+					var thah=this;
+					thah.Tbbill1=thah.Tbbill2;
+				},
+				jiazaiceshi(){
+					var thah=this;
+					thah.Tbbill1=thah.Tbbill;
+				
+				},
+				find(){
+					var thah=this;
+					$.ajax({
+						url:"[[@{/TbbillServlet/tofindtwo}]]",
+						success:function(result){
+							thah.Tbbill1 = result;
+						}
+					});
+				},
+				xingzen(){
+					var thah=this;
+					var list=JSON.stringify(this.Tbbill1);
+					alert(this.Tbbill1.details.lineid)
+					$.ajax({
+						url:"[[@{/TbbillServlet/toinsert}]]",
+						data:list,
+						contentType:"application/json;charset=utf-8",
+						type:"post",
+						success:function(result){
+							if(result=="0001"){
+								alert("添加成功！！！");
+							}else{
+								alert("添加失败！！！");
+							}
+						}
+					});
+				}
+				
+			},
+			created(){
+			}
+		});
+		</script>
+	</body>
+</html>
